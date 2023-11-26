@@ -25,6 +25,11 @@
 #include "u_hid.h"
 
 #define HIDG_MINORS	4
+/*
+ * HID protocol status
+ */
+#define HID_REPORT_PROTOCOL	1
+#define HID_BOOT_PROTOCOL	0
 
 static int major, minors;
 static struct class *hidg_class;
@@ -85,7 +90,7 @@ struct f_hidg {
 	 */
 	struct usb_ep			*in_ep_placeholder;
 	struct usb_ep			*in_ep;
-	struct usb_ep			*out_ep;	
+	struct usb_ep			*out_ep;
 	bool				bound;
 };
 
@@ -1045,11 +1050,11 @@ static int hidg_bind(struct usb_configuration *c, struct usb_function *f)
 	if (hidg->use_out_ep)
 		status = usb_assign_descriptors(f,
 			hidg_fs_descriptors_intout,
-			hidg_hs_descriptors_intout, hidg_ss_descriptors_intout);
+			hidg_hs_descriptors_intout, hidg_ss_descriptors_intout, NULL);
 	else
 		status = usb_assign_descriptors(f,
 			hidg_fs_descriptors_ssreport,
-			hidg_hs_descriptors_ssreport, hidg_ss_descriptors_ssreport);
+			hidg_hs_descriptors_ssreport, hidg_ss_descriptors_ssreport, NULL);
 
 	if (status)
 		goto fail;
